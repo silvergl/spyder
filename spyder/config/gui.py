@@ -29,7 +29,7 @@ from spyder.config.manager import CONF
 from spyder.py3compat import to_text_string
 from spyder.utils import programs
 from spyder.utils import syntaxhighlighters as sh
-
+#from tools.Aspect import instrument
 
 # To save metadata about widget shortcuts (needed to build our
 # preferences page)

@@ -16,7 +16,7 @@ import random
 import socket
 import sys
 import time
-
+#from tools.Aspect import Instrumental, instrument
 # Prevent showing internal logging errors
 # Fixes spyder-ide/spyder#15768
 logging.raiseExceptions = False
@@ -91,7 +91,7 @@ def send_args_to_spyder(args):
             continue
         break
 
-
+# @instrument
 def main():
     """
     Start Spyder application.

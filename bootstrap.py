@@ -7,7 +7,7 @@
 # (see spyder/__init__.py for details)
 # -----------------------------------------------------------------------------
 
-
+#import postimportfunc
 """
 Bootstrap Spyder.
 
@@ -267,6 +267,7 @@ if args.safe_mode or os.environ.get('SPYDER_SAFE_MODE'):
         shutil.rmtree(conf_dir)
 
 print("*. Running Spyder")
+import postimportfunc
 from spyder.app import start  # analysis:ignore
 
 time_lapse = time.time() - time_start
