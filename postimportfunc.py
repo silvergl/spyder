@@ -1,5 +1,5 @@
 from inspect import getmembers, isfunction, isclass, getmodule
-from postimport import on_import, when_imported
+#from postimport import on_import, when_imported
 import os
 import importlib
 #import pathlib
@@ -33,6 +33,7 @@ for root, dirs, files in os.walk('spyder'):
                                                      filename, 
                                                      filedir)
         print(f'spec name: {spec.name}')
+        print(f'spec subs {spec.parent}')
         list_of_module_names.append(spec.name)
 
 @when_imported(list_of_module_names)

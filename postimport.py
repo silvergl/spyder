@@ -1,9 +1,31 @@
 import importlib
 import sys
 from collections import defaultdict
-
+from tools.Aspect import _class_decorator, instrument
+from inspect import *
 _post_import_hooks = defaultdict(list)
 print(sys.modules)
+
+
+def decorate_members(mod):
+    # Decorate classes
+    #print(f'importing {mod}')
+    #for name, member in getmembers(mod, isclass):
+    #    print(f'apply decorator for: {name},{member} ')
+    #    if(member.__module__==mod.__name__):
+    #        print(member.__module__)
+    #        print(mod.__name__)
+    #        setattr(mod, name, _class_decorator(member))
+        #    print('class')
+    if mod.__spec__.name =='mainwindow':
+        print('skip')
+        return
+    
+    for name, member in getmembers(mod,isfunction):
+        if(member.__module__==mod.__spec__.name):
+            mod.__dict__[name] = instrument(member)
+         #   print('func')   
+
 class PostImportFinder:
     def __init__(self):
         self._skip=set()
@@ -22,32 +44,33 @@ class PostImportLoader:
     def load_module(self, fullname):
         importlib.import_module(fullname)
         module = sys.modules[fullname]
-        for func in _post_import_hooks[fullname]:
-            func(module)
+        if 'spyder' in fullname and 'manager' not in fullname:
+                decorate_members(module)
         self._finder._skip.remove(fullname)
         return module
-    
-def when_imported(names):
-    def decorate(func):
-        for fullname in names:
-            print(f'Search for {fullname}')
-            if fullname in sys.modules:
-                print(f'importing {fullname}')
-                func(sys.modules[fullname])
-            else:
-                _post_import_hooks[fullname].append(func)
-        return func
-    return decorate
 
-def on_import():
-    def decorate(func):
-        for fullname in sys.modules:   
-            print(f'Search for {fullname}')
-            if f'spyder' in fullname and fullname not in sys.builtin_module_names:
-                print(f'importing {fullname}')
-                func(sys.modules[fullname])
-            else:
-                _post_import_hooks[fullname].append(func)
-            return func
-    return decorate
+
+#def when_imported(names):
+#    def decorate(func):
+#        for fullname in names:
+#            print(f'Search for {fullname}')
+#            if fullname in sys.modules:
+#                print(f'importing {fullname}')
+#                func(sys.modules[fullname])
+#           else:
+#                _post_import_hooks[fullname].append(func)
+#        return func
+#    return decorate
+
+#def on_import():
+#    def decorate(func):
+#        for fullname in sys.modules:   
+#            print(f'Search for {fullname}')
+#           if f'spyder' in fullname and fullname not in sys.builtin_module_names:
+#                print(f'importing {fullname}')
+#                func(sys.modules[fullname])
+#            else:
+#                _post_import_hooks[fullname].append(func)
+#            return func
+#    return decorate
 sys.meta_path.insert(0,PostImportFinder())

@@ -267,7 +267,7 @@ if args.safe_mode or os.environ.get('SPYDER_SAFE_MODE'):
         shutil.rmtree(conf_dir)
 
 print("*. Running Spyder")
-import postimportfunc
+import postimport
 from spyder.app import start  # analysis:ignore
 
 time_lapse = time.time() - time_start
