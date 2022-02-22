@@ -1,13 +1,11 @@
 import importlib
 import sys
 from collections import defaultdict
-from tools.Aspect import _class_decorator, instrument
+from tools.aspect import _class_decorator, instrument, decorate_members
 from inspect import *
-_post_import_hooks = defaultdict(list)
-print(sys.modules)
 
-
-def decorate_members(mod):
+sys.meta_path.insert(0,PostImportFinder())
+#def decorate_members(mod):
     # Decorate classes
     #print(f'importing {mod}')
     #for name, member in getmembers(mod, isclass):
@@ -17,37 +15,37 @@ def decorate_members(mod):
     #        print(mod.__name__)
     #        setattr(mod, name, _class_decorator(member))
         #    print('class')
-    if mod.__spec__.name =='mainwindow':
-        print('skip')
-        return
+#    if mod.__spec__.name =='mainwindow':
+#        print('skip')
+#        return
     
-    for name, member in getmembers(mod,isfunction):
-        if(member.__module__==mod.__spec__.name):
-            mod.__dict__[name] = instrument(member)
+#    for name, member in getmembers(mod,isfunction):
+#        if(member.__module__==mod.__spec__.name):
+#            mod.__dict__[name] = instrument(member)
          #   print('func')   
 
-class PostImportFinder:
-    def __init__(self):
-        self._skip=set()
+#class PostImportFinder:
+#    def __init__(self):
+#        self._skip=set()
     
-    def find_module(self, fullname, path = None):
-        if fullname in self._skip:
-            return None
-        self._skip.add(fullname)
-        return PostImportLoader(self)
+#    def find_module(self, fullname, path = None):
+#        if fullname in self._skip:
+#            return None
+#        self._skip.add(fullname)
+#        return PostImportLoader(self)
 
 
-class PostImportLoader:
-    def __init__(self, finder):
-        self._finder = finder
+#class PostImportLoader:
+#    def __init__(self, finder):
+#        self._finder = finder
     
-    def load_module(self, fullname):
-        importlib.import_module(fullname)
-        module = sys.modules[fullname]
-        if 'spyder' in fullname and 'manager' not in fullname:
-                decorate_members(module)
-        self._finder._skip.remove(fullname)
-        return module
+#    def load_module(self, fullname):
+#        importlib.import_module(fullname)
+#        module = sys.modules[fullname]
+#        if 'spyder' in fullname and 'manager' not in fullname:
+#                decorate_members(module)
+#        self._finder._skip.remove(fullname)
+#        return module
 
 
 #def when_imported(names):
@@ -73,4 +71,4 @@ class PostImportLoader:
 #                _post_import_hooks[fullname].append(func)
 #            return func
 #    return decorate
-sys.meta_path.insert(0,PostImportFinder())
+

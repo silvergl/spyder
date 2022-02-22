@@ -267,7 +267,13 @@ if args.safe_mode or os.environ.get('SPYDER_SAFE_MODE'):
         shutil.rmtree(conf_dir)
 
 print("*. Running Spyder")
-import postimport
+#import postimport
+from tools.importhook import PostImportFinder
+from monitoring.controller import SingleMonitoringController
+
+some_var = SingleMonitoringController('/home/serafim/Desktop/spyder/config.ini')
+my_list = list()
+sys.meta_path.insert(0,PostImportFinder('spyder', my_list))
 from spyder.app import start  # analysis:ignore
 
 time_lapse = time.time() - time_start
